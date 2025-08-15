@@ -1,0 +1,103 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider      = "prisma-client"
+  output        = "src/generated/prisma"
+  binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String   @id @default(uuid())
+  name         String
+  email        String   @unique
+  passwordHash String
+  role         Role     @default(STUDENT)
+  image        String?
+
+  emailVerified DateTime?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  // Relations
+  tutorProfile     TutorProfile?
+  bookings         Booking[]     @relation("StudentBookings")
+  reviewsGiven     Review[]      @relation("Reviewer")
+  reviewsReceived  Review[]      @relation("Reviewee")
+
+  @@map("user")
+}
+
+// Models เดิมที่ไม่ต้องแก้ไข
+model TutorProfile {
+  id              String   @id @default(uuid())
+  userId          String   @unique
+  bio             String?
+  subjects        String
+  hourlyRate      Float
+  zoomLink        String?
+  profileImageUrl String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  user           User           @relation(fields: [userId], references: [id])
+  availabilities Availability[]
+}
+
+model Availability {
+  id        String   @id @default(uuid())
+  tutorId   String
+  date      DateTime
+  startTime DateTime
+  endTime   DateTime
+  createdAt DateTime @default(now())
+
+  tutor    TutorProfile @relation(fields: [tutorId], references: [id])
+  bookings Booking[]
+}
+
+model Booking {
+  id             String        @id @default(uuid())
+  studentId      String
+  availabilityId String
+  status         BookingStatus @default(BOOKED)
+  bookedAt       DateTime      @default(now())
+
+  student      User         @relation("StudentBookings", fields: [studentId], references: [id])
+  availability Availability @relation(fields: [availabilityId], references: [id])
+  reviews      Review[]
+}
+
+model Review {
+  id            String   @id @default(uuid())
+  bookingId     String
+  reviewerId    String
+  revieweeId    String
+  role          Role
+  rating        Int
+  comment       String?
+  reviewedAt    DateTime @default(now())
+
+  booking  Booking @relation(fields: [bookingId], references: [id])
+  reviewer User    @relation("Reviewer", fields: [reviewerId], references: [id])
+  reviewee User    @relation("Reviewee", fields: [revieweeId], references: [id])
+}
+
+enum Role {
+  STUDENT
+  TUTOR
+}
+
+enum BookingStatus {
+  BOOKED
+  COMPLETED
+  CANCELLED
+}
