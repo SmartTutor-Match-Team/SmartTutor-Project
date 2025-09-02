@@ -28,7 +28,7 @@ model User {
   updatedAt    DateTime @updatedAt
 
   // Relations
-  tutorProfile     TutorProfile?
+  tutorProfiles     TutorProfile[]
   bookings         Booking[]     @relation("StudentBookings")
   reviewsGiven     Review[]      @relation("Reviewer")
   reviewsReceived  Review[]      @relation("Reviewee")
@@ -41,9 +41,8 @@ model TutorProfile {
   id              String   @id @default(uuid())
   userId          String   @unique
   bio             String?
-  subjects        String
+  subject         String
   hourlyRate      Float
-  zoomLink        String?
   profileImageUrl String?
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
@@ -58,6 +57,8 @@ model Availability {
   date      DateTime
   startTime DateTime
   endTime   DateTime
+  zoomLink  String?   // Zoom/Meet link ต่อ slot
+  maxStudents Int       @default(1) // default = ตัวต่อตัว
   createdAt DateTime @default(now())
 
   tutor    TutorProfile @relation(fields: [tutorId], references: [id])
@@ -70,6 +71,9 @@ model Booking {
   availabilityId String
   status         BookingStatus @default(BOOKED)
   bookedAt       DateTime      @default(now())
+  cancelComment  String?       // เหตุผล cancel
+  cancelBy       Role?         // ใครเป็นคน cancel
+  videoLink      String?       // video record หลังเรียน
 
   student      User         @relation("StudentBookings", fields: [studentId], references: [id])
   availability Availability @relation(fields: [availabilityId], references: [id])
