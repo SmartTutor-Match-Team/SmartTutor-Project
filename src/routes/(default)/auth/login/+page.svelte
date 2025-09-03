@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { Mail, KeyRound } from '@lucide/svelte';
     import { goto } from "$app/navigation";
     let email = "";
     let password = "";
@@ -35,7 +36,9 @@
     };
 </script>
 
-<div class="max-w-md mx-auto mt-10 p-6 border rounded shadow">
+<div class="mx-auto mt-10 max-w-md p-6 rounded-3xl border-1 border-[#334EAC59] bg-[#334EAC59] inset-shadow-[0px_0px_5px_8px_#d0d7f1]">
+    <img src="/Logo.svg" alt="logo-Smart Tutor" class="mx-auto mb-4 w-28 h-28"/>
+	<h1 class="mb-6 text-2xl font-bold text-center">SMART TUTOR</h1>
     {#if errorMessage}
         <p class="bg-red-100 text-red-700 p-2 mb-4 rounded">{errorMessage}</p>
     {/if}
@@ -44,41 +47,44 @@
             {successMessage}
         </p>
     {/if}
-    <h1 class="text-2xl font-bold mb-6">Login</h1>
     <div class="mb-4">
         <p class="block mb-1 font-medium">Email</p>
+        <Mail class="absolute mt-2 ml-3"/>
         <input
             name="email"
             type="email"
             placeholder="Email"
             required
-            class="w-full border rounded p-2"
+			class="w-full rounded-2xl p-2 border-1 border-[#334EAC59] bg-[#E7F1FF11] inset-shadow-[1px_2px_5px_2px_#ffffff] pl-10"
             autocomplete="email"
             bind:value={email}
         />
     </div>
     <div class="mb-4">
         <p class="block mb-1 font-medium">Password</p>
+        <KeyRound class="absolute mt-2 ml-3"/>
         <input
             name="password"
             type="password"
             placeholder="Password"
             required
-            class="w-full border rounded p-2"
+			class="w-full rounded-2xl p-2 border-1 border-[#334EAC59] bg-[#E7F1FF11] inset-shadow-[1px_2px_5px_2px_#ffffff] pl-10"
             autocomplete="off"
             bind:value={password}
         />
-    </div>
-    <div class="text-center">
-        <button
-            class="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600 btn"
-            onclick={handleLogin}>Sign In</button
-        >
-        <p class="text-sm text-gray-600 mt-4">
+        <p class="text-sm text-gray-600 mt-4 text-end">
             Don't have an account? <a
                 href="/auth/register"
                 class="text-blue-500 hover:underline">Sign Up</a
             >
         </p>
+    </div>
+    <div class="text-center">
+        <button
+			onclick={handleLogin}
+			class="px-10 rounded-3xl py-2 font-bold border-1 border-[#334EAC59] bg-[#E7F1FF11] inset-shadow-[1px_2px_5px_2px_#ffffff] hover:bg-blue-100 transition-colors"
+		>
+			LOGIN
+		</button>
     </div>
 </div>

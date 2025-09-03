@@ -3,8 +3,9 @@
 	let { children } = $props();
 </script>
 
-<nav>
-    heheheheheh
-</nav>
-
-{@render children?.()}
+<main class="bg-[#F9FCFF] min-h-screen">
+    <nav>
+        heheheheheh
+    </nav>
+    {@render children?.()}
+</main>
