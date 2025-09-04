@@ -49,7 +49,7 @@
 </script>
 
 <div
-	class="mx-auto mt-10 max-w-md p-6 rounded-3xl border-1 border-[#334EAC59] bg-[#334EAC59] inset-shadow-[0px_0px_5px_8px_#d0d7f1]">
+	class="mx-auto mt-26 max-w-md p-6 rounded-3xl border-1 border-[#334EAC59] bg-[#334EAC59] inset-shadow-[0px_0px_5px_8px_#d0d7f1]">
     <img src="/Logo.svg" alt="logo-Smart Tutor" class="mx-auto mb-4 w-28 h-28"/>
 	<h1 class="mb-6 text-2xl font-bold text-center">SMART TUTOR</h1>
 
