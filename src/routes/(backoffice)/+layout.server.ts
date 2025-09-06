@@ -10,8 +10,9 @@ export const load: LayoutServerLoad = async ({ request, locals }) => {
     if (locals.user.role != 'TUTOR') {
         redirect(302, '/')
     }
+
     return {
         users: locals.user,
-        hehe: ["Hello", "World"]
+        profile: locals.profile
     };
 };

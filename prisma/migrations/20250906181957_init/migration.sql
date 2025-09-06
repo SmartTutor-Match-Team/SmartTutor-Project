@@ -78,9 +78,6 @@ CREATE TABLE "public"."Review" (
 -- CreateIndex
 CREATE UNIQUE INDEX "user_email_key" ON "public"."user"("email");
 
--- CreateIndex
-CREATE UNIQUE INDEX "TutorProfile_userId_key" ON "public"."TutorProfile"("userId");
-
 -- AddForeignKey
 ALTER TABLE "public"."TutorProfile" ADD CONSTRAINT "TutorProfile_userId_fkey" FOREIGN KEY ("userId") REFERENCES "public"."user"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
