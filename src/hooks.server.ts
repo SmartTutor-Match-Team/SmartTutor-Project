@@ -15,7 +15,19 @@ export const handle: Handle = async ({ event, resolve }) => {
         where: { id: payload.sub },
         select: { id: true, name: true, email: true, role: true, image: true }
       });
-      if (user) event.locals.user = user;
+      if (user) {
+        event.locals.user = user;
+
+        if (user.role == 'TUTOR') {
+          const profileId = event.cookies.get('profileId');
+          event.locals.profile = null;
+          if (profileId) {
+            const profile = await prisma.tutorProfile.findUnique({ where: { id: profileId } });
+            if (profile) event.locals.profile = profile;
+          }
+        }
+      }
+
     } catch {
       // โทเค็นไม่ถูกต้อง/หมดอายุ → ลบทิ้ง
       event.cookies.delete("auth_token", { path: "/" });

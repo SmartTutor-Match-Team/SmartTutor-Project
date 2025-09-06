@@ -11,6 +11,13 @@ declare global {
 				role: "STUDENT" | "TUTOR";
 				image: string | null;
 			} | null;
+			profile: {
+				id: string;
+				bio: string | null;
+				subject: string;
+				hourlyRate: number;
+				profileImageUrl: string | null;
+			} | null;
 		}
 		interface PageData {
 			users: {

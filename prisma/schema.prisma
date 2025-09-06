@@ -39,7 +39,7 @@ model User {
 // Models เดิมที่ไม่ต้องแก้ไข
 model TutorProfile {
   id              String   @id @default(uuid())
-  userId          String   @unique
+  userId          String
   bio             String?
   subject         String
   hourlyRate      Float
