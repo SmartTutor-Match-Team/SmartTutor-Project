@@ -24,9 +24,8 @@ CREATE TABLE "public"."TutorProfile" (
     "id" TEXT NOT NULL,
     "userId" TEXT NOT NULL,
     "bio" TEXT,
-    "subjects" TEXT NOT NULL,
+    "subject" TEXT NOT NULL,
     "hourlyRate" DOUBLE PRECISION NOT NULL,
-    "zoomLink" TEXT,
     "profileImageUrl" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
@@ -41,6 +40,8 @@ CREATE TABLE "public"."Availability" (
     "date" TIMESTAMP(3) NOT NULL,
     "startTime" TIMESTAMP(3) NOT NULL,
     "endTime" TIMESTAMP(3) NOT NULL,
+    "zoomLink" TEXT,
+    "maxStudents" INTEGER NOT NULL DEFAULT 1,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "Availability_pkey" PRIMARY KEY ("id")
@@ -53,6 +54,9 @@ CREATE TABLE "public"."Booking" (
     "availabilityId" TEXT NOT NULL,
     "status" "public"."BookingStatus" NOT NULL DEFAULT 'BOOKED',
     "bookedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "cancelComment" TEXT,
+    "cancelBy" "public"."Role",
+    "videoLink" TEXT,
 
     CONSTRAINT "Booking_pkey" PRIMARY KEY ("id")
 );
