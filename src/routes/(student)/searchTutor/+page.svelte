@@ -1,7 +1,23 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
+
     const { data } = $props();
 
-    let tutors = $state(data.tutors || []);
+    onMount(() => {
+        handleSearch();
+    })
+
+    let tutors = $state(data.tutors || []) as unknown as {
+        id: string;
+        bio: string | null;
+        subject: string;
+        hourlyRate: number;
+        profileImageUrl: string | null;
+        user: {
+            name: string;
+        };
+        avgRating: number | null;
+    }[];
 
     let searchName = $state('');
     let selectedSubject = $state('');
@@ -68,8 +84,9 @@
             <img src={tutor.profileImageUrl} alt={tutor.user.name} class="w-24 rounded-full mb-4" />
             <h2 class="text-xl font-bold">{tutor.user.name}</h2>
             <p class="text-gray-600">{tutor.subject}</p>
-            <p class="">Bio: {tutor.bio}</p>
-            <p class="">Hourly Rate: ${tutor.hourlyRate}</p>
+            <p class="text-gray-600">Bio: {tutor.bio}</p>
+            <p class="text-gray-600">Hourly Rate: ${tutor.hourlyRate}</p>
+            <p class="text-yellow-500">Rating: {tutor.avgRating ? tutor.avgRating.toFixed(1) : 'No ratings yet'}</p>
             <button class="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
                 View Profile
             </button>
