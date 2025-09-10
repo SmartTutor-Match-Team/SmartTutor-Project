@@ -10,6 +10,10 @@ export async function load({ locals }: { locals: { user?: any } }) {
         throw redirect(302, '/overview');
     }
 
+    if (locals.user.role == 'STUDENT') {
+        throw redirect(302, '/searchTutor');
+    }
+
     const users = locals.user;
 
     return {

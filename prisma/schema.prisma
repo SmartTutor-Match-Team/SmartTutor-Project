@@ -16,22 +16,21 @@ datasource db {
 }
 
 model User {
-  id           String   @id @default(uuid())
+  id           String  @id @default(uuid())
   name         String
-  email        String   @unique
+  email        String  @unique
   passwordHash String
-  role         Role     @default(STUDENT)
+  role         Role    @default(STUDENT)
   image        String?
 
   emailVerified DateTime?
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
 
   // Relations
-  tutorProfiles     TutorProfile[]
-  bookings         Booking[]     @relation("StudentBookings")
-  reviewsGiven     Review[]      @relation("Reviewer")
-  reviewsReceived  Review[]      @relation("Reviewee")
+  tutorProfiles TutorProfile[]
+  bookings      Booking[]      @relation("StudentBookings")
+  review        Review[]
 
   @@map("user")
 }
@@ -49,17 +48,18 @@ model TutorProfile {
 
   user           User           @relation(fields: [userId], references: [id])
   availabilities Availability[]
+  review         Review[]
 }
 
 model Availability {
-  id        String   @id @default(uuid())
-  tutorId   String
-  date      DateTime
-  startTime DateTime
-  endTime   DateTime
-  zoomLink  String?   // Zoom/Meet link ต่อ slot
-  maxStudents Int       @default(1) // default = ตัวต่อตัว
-  createdAt DateTime @default(now())
+  id          String   @id @default(uuid())
+  tutorId     String
+  date        DateTime
+  startTime   DateTime
+  endTime     DateTime
+  zoomLink    String? // Zoom/Meet link ต่อ slot
+  maxStudents Int      @default(1) // default = ตัวต่อตัว
+  createdAt   DateTime @default(now())
 
   tutor    TutorProfile @relation(fields: [tutorId], references: [id])
   bookings Booking[]
@@ -71,9 +71,9 @@ model Booking {
   availabilityId String
   status         BookingStatus @default(BOOKED)
   bookedAt       DateTime      @default(now())
-  cancelComment  String?       // เหตุผล cancel
-  cancelBy       Role?         // ใครเป็นคน cancel
-  videoLink      String?       // video record หลังเรียน
+  cancelComment  String? // เหตุผล cancel
+  cancelBy       Role? // ใครเป็นคน cancel
+  videoLink      String? // video record หลังเรียน
 
   student      User         @relation("StudentBookings", fields: [studentId], references: [id])
   availability Availability @relation(fields: [availabilityId], references: [id])
@@ -81,18 +81,17 @@ model Booking {
 }
 
 model Review {
-  id            String   @id @default(uuid())
-  bookingId     String
-  reviewerId    String
-  revieweeId    String
-  role          Role
-  rating        Int
-  comment       String?
-  reviewedAt    DateTime @default(now())
+  id             String   @id @default(uuid())
+  bookingId      String
+  reviewerId     String
+  tutorProfileId String
+  rating         Int
+  comment        String?
+  reviewedAt     DateTime @default(now())
 
-  booking  Booking @relation(fields: [bookingId], references: [id])
-  reviewer User    @relation("Reviewer", fields: [reviewerId], references: [id])
-  reviewee User    @relation("Reviewee", fields: [revieweeId], references: [id])
+  booking      Booking      @relation(fields: [bookingId], references: [id])
+  reviewer     User         @relation(fields: [reviewerId], references: [id])
+  tutorProfile TutorProfile @relation(fields: [tutorProfileId], references: [id])
 }
 
 enum Role {
