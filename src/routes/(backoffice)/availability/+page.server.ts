@@ -84,7 +84,7 @@ export async function load({ cookies }: { cookies: any }) {
             availabilityId: {
                 in: availability.map(av => av.id)
             },
-            status: 'COMPLETED'
+            status: 'BOOKED'
         }
     });
 

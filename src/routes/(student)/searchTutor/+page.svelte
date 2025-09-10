@@ -87,9 +87,11 @@
             <p class="text-gray-600">Bio: {tutor.bio}</p>
             <p class="text-gray-600">Hourly Rate: ${tutor.hourlyRate}</p>
             <p class="text-yellow-500">Rating: {tutor.avgRating ? tutor.avgRating.toFixed(1) : 'No ratings yet'}</p>
-            <button class="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
-                View Profile
-            </button>
+            <a href="/tutorProfile/{tutor.id}">
+                <button class="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
+                    View Profile
+                </button>
+            </a>
         </div>
     {/each}
 </div>
