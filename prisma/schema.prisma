@@ -59,6 +59,7 @@ model Availability {
   endTime     DateTime
   zoomLink    String? // Zoom/Meet link ต่อ slot
   maxStudents Int      @default(1) // default = ตัวต่อตัว
+  isCancelled Boolean  @default(false)
   createdAt   DateTime @default(now())
 
   tutor    TutorProfile @relation(fields: [tutorId], references: [id])

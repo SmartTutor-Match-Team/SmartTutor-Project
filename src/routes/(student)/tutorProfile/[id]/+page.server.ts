@@ -18,10 +18,13 @@ export const load: PageServerLoad = async ({ params }) => {
 
     if (!tutor) throw new Error('Tutor not found');
 
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() - 1);
+
     let availabilities = await prisma.availability.findMany({
         where: {
             tutorId: tutor.id,
-            date: { gte: new Date() },
+            date: { gte: tomorrow },
             startTime: { gte: new Date() }
         },
         include: {
