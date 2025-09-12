@@ -63,6 +63,68 @@ export const actions: Actions = {
             console.error(err);
             return { success: false, message: 'Failed to delete availability' };
         }
+    },
+
+    edit: async ({ request }) => {
+        const formData = await request.formData();
+        
+        const id = formData.get('id') as string;
+        const date = formData.get('date') as string;
+        const startTime = formData.get('startTime') as string;
+        const endTime = formData.get('endTime') as string;
+        const zoomLink = formData.get('zoomLink') as string;
+        const maxStudents = parseInt(formData.get('maxStudents') as string, 10);
+
+        if (!id || !date || !startTime || !endTime || !zoomLink || isNaN(maxStudents)) {
+            return { success: false, message: 'Invalid input' };
+        }
+
+        const parsedDate = new Date(`${date}T00:00:00+07:00`);
+        const parsedStartTime = new Date(`${date}T${startTime}:00+07:00`);
+        const parsedEndTime = new Date(`${date}T${endTime}:00+07:00`);
+
+        if (isNaN(parsedDate.getTime()) || isNaN(parsedStartTime.getTime()) || isNaN(parsedEndTime.getTime())) {
+            return { success: false, message: 'Invalid date or time' };
+        }
+
+        try {
+            await prisma.availability.update({
+                where: { id },
+                data: {
+                    date: parsedDate,
+                    startTime: parsedStartTime,
+                    endTime: parsedEndTime,
+                    zoomLink,
+                    maxStudents
+                }
+            });
+
+            return { success: true, message: 'Availability updated successfully' };
+        } catch (err) {
+            console.error(err);
+            return { success: false, message: 'Failed to update availability' };
+        }
+    },
+
+    complete: async ({ request }) => {
+        const formData = await request.formData();
+        const id = formData.get('id') as string;
+        const vdoLink = formData.get('vdoLink') as string;
+
+        if (!id) {
+            return { success: false, message: 'Invalid request' };
+        }
+
+        try {
+            await prisma.booking.updateMany({
+                where: { availabilityId: id, status: 'BOOKED' },
+                data: { status: 'COMPLETED', videoLink: vdoLink }
+            });
+        } catch (err) {
+            console.error(err);
+            return { success: false, message: 'Failed to complete availability' };
+        }
+        return { success: true, message: 'Availability completed successfully' };
     }
 };
 
@@ -73,7 +135,7 @@ export async function load({ cookies }: { cookies: any }) {
             tutorId: cookies.get('profileId')
         },
         orderBy: [
-            { date: 'asc' },
+            { date: 'desc' },
             { startTime: 'asc' }
         ]
     });
@@ -86,6 +148,20 @@ export async function load({ cookies }: { cookies: any }) {
             },
             status: 'BOOKED'
         }
+    });
+
+    const completeAvailability = await prisma.booking.findMany({
+        where: {
+            availabilityId: {
+                in: availability.map(av => av.id)
+            },
+            status: 'COMPLETED'
+        }
+    });
+
+    availability.forEach(av => {
+        const isCompleted = completeAvailability.some(ca => ca.availabilityId === av.id);
+        (av as any).isCompleted = isCompleted;
     });
 
     // Map student count to each availability

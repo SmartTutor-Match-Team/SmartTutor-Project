@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
+
 	const { data } = $props();
 
 	type AvailabilityWithBooking = {
@@ -10,6 +12,7 @@
 		tutorId: string;
 		zoomLink: string | null;
 		maxStudents: number;
+		isCancelled: boolean;
 		bookings: { id: string }[]; // หรือ select fields ที่ต้องใช้
 	};
 
@@ -60,6 +63,7 @@
 			const result = await response.json();
 			if (response.ok) {
 				alert('Booking successful!');
+				goto('/searchTutor');
 			} else {
 				alert(`Booking failed: ${result.error}`);
 			}
@@ -90,7 +94,9 @@
 				Date: {formatDate(availability.date + '')} Time: {formatTime(availability.startTime + '')} -
 				{formatTime(availability.endTime + '')} Seat: {availability.bookings
 					.length}/{availability.maxStudents}
-				{#if availability.bookings.length < availability.maxStudents}
+				{#if availability.isCancelled}
+					<span class="ml-4 rounded bg-red-500 px-2 py-1 text-white">Cancelled</span>
+				{:else if availability.bookings.length < availability.maxStudents}
 					<button
 						class="ml-4 rounded bg-blue-500 px-2 py-1 text-white hover:bg-blue-600"
 						onclick={() => {
