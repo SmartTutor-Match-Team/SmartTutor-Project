@@ -156,6 +156,7 @@
 						<td class="border border-gray-300 px-4 py-2">{ava.maxStudents}</td>
 						<td class="border border-gray-300 px-4 py-2">
 							<button class="rounded-full bg-red-500 px-3 py-1 text-white" onclick={() => handleDeleteAvailability(ava.id, ava.studentCount)}>Delete</button>
+							<!-- later: แก้ไข, cancel -->
 						</td>
 					</tr>
 				{/each}
