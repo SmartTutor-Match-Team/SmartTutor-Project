@@ -42,6 +42,7 @@ CREATE TABLE "public"."Availability" (
     "endTime" TIMESTAMP(3) NOT NULL,
     "zoomLink" TEXT,
     "maxStudents" INTEGER NOT NULL DEFAULT 1,
+    "isCancelled" BOOLEAN NOT NULL DEFAULT false,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "Availability_pkey" PRIMARY KEY ("id")
@@ -66,8 +67,7 @@ CREATE TABLE "public"."Review" (
     "id" TEXT NOT NULL,
     "bookingId" TEXT NOT NULL,
     "reviewerId" TEXT NOT NULL,
-    "revieweeId" TEXT NOT NULL,
-    "role" "public"."Role" NOT NULL,
+    "tutorProfileId" TEXT NOT NULL,
     "rating" INTEGER NOT NULL,
     "comment" TEXT,
     "reviewedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -97,4 +97,4 @@ ALTER TABLE "public"."Review" ADD CONSTRAINT "Review_bookingId_fkey" FOREIGN KEY
 ALTER TABLE "public"."Review" ADD CONSTRAINT "Review_reviewerId_fkey" FOREIGN KEY ("reviewerId") REFERENCES "public"."user"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "public"."Review" ADD CONSTRAINT "Review_revieweeId_fkey" FOREIGN KEY ("revieweeId") REFERENCES "public"."user"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "public"."Review" ADD CONSTRAINT "Review_tutorProfileId_fkey" FOREIGN KEY ("tutorProfileId") REFERENCES "public"."TutorProfile"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
