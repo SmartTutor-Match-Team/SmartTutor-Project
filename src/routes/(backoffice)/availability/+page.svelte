@@ -300,9 +300,17 @@
 						<td class="border border-gray-300 px-4 py-2">
 							{#if ava.isCompleted}
 								<span class="font-bold text-green-500">Completed</span>
-							{:else if parseThaiDate(ava.date) <= new Date() && ava.endTime <= nowtime() && !ava.isCancelled}
+							{:else if parseThaiDate(ava.date) < new Date() && !ava.isCancelled}
 								<button
-									class="ml-2 rounded-full bg-green-500 px-3 py-1 text-white"
+									class="rounded-full bg-green-500 px-3 py-1 text-white"
+									onclick={() => {
+										showCompleteModal = true;
+										completeAvailabilityId = ava.id;
+									}}>Complete</button
+								>
+							{:else if parseThaiDate(ava.date).toDateString() === new Date().toDateString() && ava.endTime <= nowtime() && !ava.isCancelled}
+								<button
+									class="rounded-full bg-green-500 px-3 py-1 text-white"
 									onclick={() => {
 										showCompleteModal = true;
 										completeAvailabilityId = ava.id;
