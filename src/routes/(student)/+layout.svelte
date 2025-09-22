@@ -1,12 +1,12 @@
 <script>
 	let { children } = $props();
+	import Nav from '$lib/Nav.svelte';
 </script>
 
 <svelte:head>
 </svelte:head>
 
-<nav class="flex justify-center w-full">
-	Nav
-</nav>
-
-{@render children?.()}
+<Nav />
+<main class="bg-[#F9FCFF] min-h-screen mt-30">
+	{@render children?.()}
+</main>

@@ -1,10 +1,11 @@
 <script lang="ts">
     import { Mail, KeyRound } from '@lucide/svelte';
     import { goto } from "$app/navigation";
-    let email = "";
-    let password = "";
-    let errorMessage = "";
-    let successMessage = "";
+    
+    let email = $state("");
+    let password = $state("");
+    let errorMessage = $state("");
+    let successMessage = $state("");
 
     const handleLogin = async () => {
         errorMessage = "";
@@ -71,6 +72,11 @@
 			class="w-full rounded-2xl p-2 border-1 border-[#334EAC59] bg-[#E7F1FF11] inset-shadow-[1px_2px_5px_2px_#ffffff] pl-10"
             autocomplete="off"
             bind:value={password}
+            onkeypress={event => {
+                if (event.key === 'Enter') {
+                    handleLogin();
+                }
+            }}
         />
         <p class="text-sm text-gray-600 mt-4 text-end">
             Don't have an account? <a
