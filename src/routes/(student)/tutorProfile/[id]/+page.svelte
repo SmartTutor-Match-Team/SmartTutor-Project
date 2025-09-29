@@ -103,27 +103,24 @@
 	<!-- Availability Section -->
 	<div>
 		<h2 class="text-3xl font-semibold pb-2 mb-4">Available Slots</h2>
-
 		{#if tutor.availabilities && tutor.availabilities.length > 0}
 			<div class="space-y-4">
 				{#each tutor.availabilities as availability (availability.id)}
-					<article class="flex items-center justify-between border-b py-4">
-						<div>
-							<p><strong>Date:</strong> {formatDate(availability.date + '')}</p>
-							<p>
-								<strong>Time:</strong>
+					<article class="rounded-4xl border-1 border-[#334EAC59] bg-[#334EAC59] inset-shadow-[0px_0px_5px_8px_#d0d7f1] p-4 mx-auto top-5 flex flex-wrap justify-around items-center text-black font-semibold mt-4 gap-4">
+							<p class="text-xl font-bold">Date: {formatDate(availability.date + '')}</p>
+							<p class="text-xl font-bold">
+								Time:
 								{formatTime(availability.startTime + '')} - {formatTime(availability.endTime + '')}
 							</p>
-							<p>
-								<strong>Seats:</strong>
+							<p class="text-xl font-bold">
+								Seats:
 								{availability.bookings.length}/{availability.maxStudents}
 							</p>
-						</div>
 						<div>
 							{#if availability.bookings.length < availability.maxStudents}
 								<button
 									type="button"
-									class="rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 transition-colors"
+									class="px-6 py-2 rounded-4xl border-1 border-[#E7F1FF5A] inset-shadow-[1px_2px_5px_2px_#ffffff] hover:bg-[#E7F1FF5A] hover:text-[#334EAC] transition-colors font-semibold"
 									onclick={() => {
 										showBookingModal = true;
 										selectedAvailability = availability;
@@ -150,25 +147,28 @@
 
 <!-- Booking Confirmation Modal -->
 {#if showBookingModal && selectedAvailability}
-	<div class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-		<div class="rounded-lg bg-white p-6 shadow-lg w-full max-w-md">
-			<h2 class="mb-4 text-xl font-bold">Confirm Booking</h2>
-			<div class="space-y-2">
-				<p>Are you sure you want to book this session with <strong>{tutor.user.name}</strong>?</p>
-				<p><strong>Date:</strong> {formatDate(selectedAvailability.date + '')}</p>
-				<p>
-					<strong>Time:</strong>
-					{formatTime(selectedAvailability.startTime + '')} -
-					{formatTime(selectedAvailability.endTime + '')}
-				</p>
+	<div class="fixed inset-0 z-50 flex items-center justify-center bg-opacity-50">
+		<div class="rounded-lg bg-white p-6 shadow-lg w-full max-w-xl">
+			<h2 class="mb-4 text-xl font-bold text-center">Confirm Booking</h2>
+			<div class="grid grid-cols-2">
+				<div class="text-left">
+					<p><strong>DATE:</strong> {formatDate(selectedAvailability.date + '')}</p>
+					<p><strong>TUTOR:</strong> {tutor.user.name}</p>
+					<p><strong>PRICE:</strong> ${tutor.hourlyRate}</p>
+				</div>
+				<div class="text-right">
+					<p><strong>TIME:</strong> {formatTime(selectedAvailability.startTime + '')} - {formatTime(selectedAvailability.endTime + '')}</p>
+					<p><strong>SUBJECT:</strong> {tutor.subject}</p>
+				</div>
+				<div class="col-span-2"><p><strong>LINK:</strong> {selectedAvailability.zoomLink} </p></div>
 			</div>
 			<div class="mt-6 flex justify-end space-x-3">
 				<button
-					class="rounded bg-gray-300 px-4 py-2 hover:bg-gray-400 transition-colors"
+					class="rounded-3xl bg-[#FF0000]/50 px-4 py-2 font-bold hover:bg-[#d70000]/50 transition-colors"
 					onclick={() => (showBookingModal = false)}>Cancel</button
 				>
 				<button
-					class="rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 transition-colors"
+					class="rounded-3xl bg-[#09FF00]/50 px-4 py-2 font-bold hover:bg-[#02e600]/50 transition-colors"
 					onclick={() => {
 						if (selectedAvailability) {
 							handleBooking(selectedAvailability.id);
