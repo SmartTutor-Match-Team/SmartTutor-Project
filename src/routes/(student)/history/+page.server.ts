@@ -8,7 +8,11 @@ export const load: PageServerLoad = async ({ locals }) => {
 
     const history = await prisma.booking.findMany({
         where: { studentId: locals.user.id, status: 'COMPLETED' },
-        include: { availability: true, reviews: true },
+        include: { availability: {
+            include: { tutor: {
+                include: { user: true }
+            } }
+        }, reviews: true },
     });
 
     return {
