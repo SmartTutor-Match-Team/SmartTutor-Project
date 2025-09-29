@@ -4,7 +4,6 @@
     const { data } = $props();
 
     let history = $state(data.history || []);
-    console.log(data.history);
 
     $effect(() => {
         history = data.history;

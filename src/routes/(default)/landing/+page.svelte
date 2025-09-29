@@ -1,31 +1,18 @@
 <script lang="ts">
 	import { ArrowUpCircle } from '@lucide/svelte';
-	let our_tutor = [
-		{
-			name: 'Mr.A',
-			subject: 'Math',
-			rating: 4.5,
-			image: '/Logo.svg'
-		},
-		{
-			name: 'Ms.B',
-			subject: 'Science',
-			rating: 4.7,
-			image: '/Logo.svg'
-		},
-		{
-			name: 'Dr.C',
-			subject: 'English',
-			rating: 4.9,
-			image: '/Logo.svg'
-		},
-		{
-			name: 'Ms.D',
-			subject: 'History',
-			rating: 4.8,
-			image: '/Logo.svg'
-		}
-	];
+	const { data } = $props();
+
+	let our_tutor = $state(data.our_tutor || []) as unknown as {
+		id: string;
+		bio: string | null;
+		subject: string;
+		hourlyRate: number;
+		profileImageUrl: string | null;
+		user: {
+			name: string;
+		};
+		avgRating: number | null;
+	}[];
 </script>
 
 <section class="flex h-screen w-full flex-col items-center justify-center p-6" id="home">
@@ -86,10 +73,10 @@
 			<div
 				class="w-64 rounded-2xl border-1 border-[#334EAC59] bg-[#334EAC59] p-4 inset-shadow-[0px_0px_5px_8px_#d0d7f1]"
 			>
-				<img src={tutor.image} alt={tutor.name} class="h-40 w-full rounded-2xl" />
-				<h3 class="mt-2 text-xl font-bold">{tutor.name}</h3>
+				<img src={tutor.profileImageUrl} alt={tutor.user.name} class="h-64 w-full rounded-2xl object-cover" />
+				<h3 class="mt-2 text-xl font-bold">{tutor.user.name}</h3>
 				<p class="text-md font-medium">Subject: {tutor.subject}</p>
-				<p class="text-md font-medium">Rating: {tutor.rating} ⭐</p>
+				<p class="text-md font-medium">Rating: {tutor.avgRating} ⭐</p>
 			</div>
 		{/each}
 	</div>
