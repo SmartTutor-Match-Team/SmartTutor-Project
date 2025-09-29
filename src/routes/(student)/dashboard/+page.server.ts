@@ -1,0 +1,19 @@
+import prisma from '$lib/server/prisma';
+import type { PageServerLoad } from './$types';
+
+export async function load({ locals }: { locals: any }) {
+    if (!locals.user) {
+        return { bookings: [] };
+    }
+    const bookings = await prisma.booking.findMany({
+        where: { studentId: locals.user.id },
+        include: { availability: {
+            include: { tutor: {
+                include: { user: true }
+            } }
+        }, reviews: true },
+    });
+    return {
+        bookings,
+    };
+}

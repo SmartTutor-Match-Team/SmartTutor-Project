@@ -7,6 +7,6 @@
 </svelte:head>
 
 <Nav />
-<main class="bg-[#F9FCFF] min-h-screen mt-30">
+<main class="bg-[#F9FCFF] min-h-screen pt-30">
 	{@render children?.()}
 </main>
