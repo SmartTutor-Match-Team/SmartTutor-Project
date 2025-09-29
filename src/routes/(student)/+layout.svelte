@@ -1,12 +1,12 @@
 <script>
 	let { children } = $props();
-	import Nav from '$lib/Nav.svelte';
+	import StudentNav from '$lib/StudentNav.svelte';
 </script>
 
 <svelte:head>
 </svelte:head>
 
-<Nav />
+<StudentNav />
 <main class="bg-[#F9FCFF] min-h-screen pt-30">
 	{@render children?.()}
 </main>
