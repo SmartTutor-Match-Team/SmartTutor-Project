@@ -61,7 +61,7 @@
                         {new Date(item.availability.startTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} -
                         {new Date(item.availability.endTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>
                     <p>Seats:
-                        {item.availability.bookings}/{item.availability.maxStudents}
+                        {item.availability.bookings.length}/{item.availability.maxStudents}
                     </p>
                     <button class="px-12 py-2 rounded-4xl border-1 border-[#E7F1FF5A]    inset-shadow-[1px_2px_5px_2px_#ffffff] hover:bg-[#E7F1FF5A] hover:text-[#334EAC] transition-colors font-bold" onclick={() => {
                         showDetailModal = true;
@@ -86,7 +86,7 @@
                         {new Date(item.availability.startTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} -
                         {new Date(item.availability.endTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>
                     <p>Seats:
-                        {item.availability.bookings}/{item.availability.maxStudents}
+                        {item.availability.bookings.length}/{item.availability.maxStudents}
                     </p>
                     <button class="px-12 py-2 rounded-4xl border-1 border-[#E7F1FF5A]    inset-shadow-[1px_2px_5px_2px_#ffffff] hover:bg-[#E7F1FF5A] hover:text-[#334EAC] transition-colors font-bold" onclick={() => {
                         showDetailModal = true;
@@ -108,7 +108,7 @@
                         <p><strong>TIME:</strong> {new Date(selectedBooking.availability.startTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} - {new Date(selectedBooking.availability.endTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>
                         <p><strong>TUTOR:</strong> {selectedBooking.availability.tutor.user.name}</p>
                         <p><strong>SUBJECT:</strong> {selectedBooking.availability.tutor.subject}</p>
-                        <p><strong>LINK:</strong> {selectedBooking.videoLink}</p>
+                        <p><strong>LINK:</strong> {selectedBooking.availability.zoomLink}</p>
                     </div>
                 {/if}
                 <div class="flex justify-end space-x-2">
