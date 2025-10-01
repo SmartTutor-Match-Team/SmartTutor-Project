@@ -5,13 +5,14 @@
 
     let name = $state(data.users.name || '');
     let email = $state(data.users.email || '');
-    let subject = $state(data.profile.subject || '');
-    let hourlyRate = $state(data.profile.hourlyRate || 0);
-    let profileImageUrl = $state(data.profile.profileImageUrl || '');
-    let bio = $state(data.profile.bio || '');
+    let subject = $state(data.profile?.subject || '');
+    let hourlyRate = $state(data.profile?.hourlyRate || 0);
+    let profileImageUrl = $state(data.profile?.profileImageUrl || '');
+    let bio = $state(data.profile?.bio || '');
 
     let newProfileImage: File | null = null;
-    let imagePreviewUrl = $state(profileImageUrl);
+    // svelte-ignore state_referenced_locally
+        let imagePreviewUrl = $state(profileImageUrl);
 
     const getFormHtml = () => `
         <div class="space-y-6">
@@ -137,8 +138,8 @@
                 }
                 
                 try {
-                    const response = await fetch('/api/tutorProfile', {
-                        method: 'PUT',
+                    const response = await fetch('/profile?/edit', {
+                        method: 'POST',
                         body: formData
                     });
 

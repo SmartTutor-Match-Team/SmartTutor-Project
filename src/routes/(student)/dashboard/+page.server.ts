@@ -1,5 +1,4 @@
 import prisma from '$lib/server/prisma';
-import type { PageServerLoad } from './$types';
 
 export async function load({ locals }: { locals: any }) {
     if (!locals.user) {
@@ -10,10 +9,10 @@ export async function load({ locals }: { locals: any }) {
         include: { availability: {
             include: { tutor: {
                 include: { user: true }
-            } }
+            }, bookings: true }
         }, reviews: true },
     });
     return {
-        bookings,
+        bookings
     };
 }
