@@ -57,7 +57,7 @@
 <section aria-labelledby="tutor-search-heading" class="flex flex-col items-center">
 	<h1 id="tutor-search-heading" class="text-4xl font-semibold text-center">FIND YOUR CUPID TUTOR</h1>
 	<form
-		transition:fly={{ y: 20, duration: 600, delay: 200 }}
+		in:fly={{ y: 20, duration: 600, delay: 200 }}
 		class="w-[70%] rounded-4xl border-1 border-[#334EAC59] bg-[#334EAC59] inset-shadow-[0px_0px_5px_8px_#d0d7f1] p-2 mx-auto top-5 flex flex-wrap justify-around items-center text-white font-semibold mt-4 gap-4"
 		onsubmit={handleSearch}
 	>
@@ -133,7 +133,7 @@
 	</form>
 
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-4 w-full my-2 mx-auto px-32"
-        transition:fly={{ y: 20, duration: 600, delay: 400 }}>
+        in:fly={{ y: 20, duration: 600, delay: 400 }}>
         {#each tutors as tutor (tutor.id)}
             <article class="rounded-4xl border-1 border-[#334EAC59] bg-[#334EAC59] inset-shadow-[0px_0px_5px_8px_#d0d7f1] p-4 flex flex-col items-center text-white">
                 <img src={tutor.profileImageUrl || '/Logo.svg'} alt={`Profile of ${tutor.user.name}`} class="w-24 h-24 rounded-full mb-4 object-cover" />
