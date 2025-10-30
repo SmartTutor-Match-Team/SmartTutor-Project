@@ -8,7 +8,7 @@
     let value = $state(today(getLocalTimeZone()));
     let { data }: PageProps = $props();
     let bookings = $state(data.bookings || []);
-    let upcoming = $derived(bookings.filter((item) => new Date(item.availability.date) >= new Date()));
+    let upcoming = $derived(bookings.filter((item) => new Date(item.availability.date) >= new Date() && item.status !== 'CANCELLED'));
     let cancel = $derived(bookings.filter((item) => item.status == 'CANCELLED'));
     let past = $derived(bookings.filter((item) => new Date(item.availability.date) < new Date()));
     let showDetailModal: boolean = $state(false);
