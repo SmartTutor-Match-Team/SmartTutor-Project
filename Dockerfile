@@ -14,19 +14,17 @@ RUN pnpm install
 # Copy source code ทั้งหมด
 COPY . .
 
-# SvelteKit build
-RUN pnpm build
+# Some tools (and tsconfig.json) expect `./.svelte-kit/tsconfig.json` to exist.
+# Create a minimal placeholder so `pnpm prisma generate` and other steps won't fail
+# when they read/extend the project-level `tsconfig.json` which references it.
+RUN mkdir -p .svelte-kit \
+	&& printf '%s' '{"compilerOptions":{"module":"ESNext","moduleResolution":"bundler"}}' > .svelte-kit/tsconfig.json
 
-# Prisma generate ก่อน SvelteKit build
+# Generate Prisma client first so the build (which may import Prisma client types) succeeds
 RUN pnpm prisma generate
 
-FROM node:20-alpine AS runner
-WORKDIR /app
-ENV NODE_ENV=production
-COPY --from=base /app/build ./build
-COPY --from=base /app/node_modules ./node_modules
-COPY --from=base /app/prisma ./prisma
-COPY --from=base /app/prisma/src/generated ./prisma/src/generated
+# SvelteKit build
+RUN pnpm build
 
 # เปิดพอร์ต
 EXPOSE 5173
