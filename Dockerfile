@@ -14,6 +14,9 @@ RUN pnpm install
 # Copy source code ทั้งหมด
 COPY . .
 
+# Copy .env file
+COPY .env .env
+
 # Some tools (and tsconfig.json) expect `./.svelte-kit/tsconfig.json` to exist.
 # Create a minimal placeholder so `pnpm prisma generate` and other steps won't fail
 # when they read/extend the project-level `tsconfig.json` which references it.
