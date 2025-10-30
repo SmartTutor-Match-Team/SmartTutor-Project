@@ -43,4 +43,4 @@ COPY --from=0 /app/prisma/src/generated ./prisma/src/generated
 EXPOSE 3000
 
 # Start server
-CMD ["pnpm", "start"]
+CMD ["node", "build"]
