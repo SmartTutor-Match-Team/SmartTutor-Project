@@ -27,6 +27,7 @@ RUN mkdir -p .svelte-kit \
 RUN pnpm prisma generate
 
 # SvelteKit build
+RUN echo "DATABASE_URL=$DATABASE_URL"
 RUN pnpm build
 
 FROM node:20-alpine AS runner
