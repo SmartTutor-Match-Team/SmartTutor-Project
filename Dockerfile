@@ -20,8 +20,16 @@ RUN pnpm build
 # Prisma generate ก่อน SvelteKit build
 RUN pnpm prisma generate
 
+FROM node:20-alpine AS runner
+WORKDIR /app
+ENV NODE_ENV=production
+COPY --from=base /app/build ./build
+COPY --from=base /app/node_modules ./node_modules
+COPY --from=base /app/prisma ./prisma
+COPY --from=base /app/prisma/src/generated ./prisma/src/generated
+
 # เปิดพอร์ต
-EXPOSE 3000
+EXPOSE 5173
 
 # Start server
 CMD ["pnpm", "start"]
