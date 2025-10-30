@@ -35,7 +35,7 @@ export const handle: Handle = async ({ event, resolve }) => {
 
           if (profile) {
             event.locals.profile = profile;
-            event.cookies.set("profileId", profile.id, { path: "/", httpOnly: true });
+            event.cookies.set("profileId", profile.id, { path: "/", httpOnly: true, sameSite: "lax", secure: process.env.NODE_ENV === "production" });
           } else {
             event.cookies.delete("profileId", { path: "/" });
           }

@@ -1,7 +1,9 @@
 import prisma from '$lib/server/prisma';
 import type { Actions } from './$types';
-import path, { parse } from 'path';
-import fs, { fdatasync } from 'fs';
+import path from 'path';
+import fs from 'fs';
+import { S3_BUCKET } from '$env/static/private';
+import { uploadProfileImage } from '$lib/server/s3';
 
 export const actions: Actions = {
     edit: async ({ request, locals }) => {
@@ -18,23 +20,36 @@ export const actions: Actions = {
             return { success: false, message: 'Invalid input' };
         }
         
-        let profileImageUrl: string | null = null;
         let urlPath: string | null = null;
         if (profileImage && profileImage.size > 0) {
-            // Simulate image upload and get URL (replace with actual upload logic)
-            profileImageUrl = `/tutorProfile/${Date.now()}-${profileImage.name}`;
+            // If S3 is configured, upload to S3; otherwise save locally in static/tutorProfile
+            if (S3_BUCKET) {
+                try {
+                    urlPath = await uploadProfileImage(profileImage);
+                } catch (err) {
+                    console.error('Failed to upload profile image to S3:', err);
+                    return { success: false, message: 'Failed to upload image' };
+                }
+            } else {
+                const uploadsDir = path.join(process.cwd(), 'static', 'tutorProfile');
+                if (!fs.existsSync(uploadsDir)) fs.mkdirSync(uploadsDir, { recursive: true });
 
-            if (!fs.existsSync('static/tutorProfile')) {
-                fs.mkdirSync('static/tutorProfile', { recursive: true });
+                const arrayBuffer = await profileImage.arrayBuffer();
+                const buffer = Buffer.from(arrayBuffer);
+                const fileName = `${Date.now()}-${profileImage.name}`;
+                const filePath = path.join(uploadsDir, fileName);
+
+                try {
+                    fs.writeFileSync(filePath, buffer);
+                } catch (err) {
+                    console.error('Failed to write uploaded file to disk:', err);
+                    return { success: false, message: 'Failed to save image' };
+                }
+
+                urlPath = `/tutorProfile/${fileName}`;
             }
-
-            const arrayBuffer = await profileImage.arrayBuffer();
-            const buffer = Buffer.from(arrayBuffer);
-            fs.writeFileSync(`static${profileImageUrl}`, buffer);
-
-            urlPath = profileImageUrl;
         } else {
-            profileImageUrl = locals.profile?.profileImageUrl || null;
+            urlPath = locals.profile?.profileImageUrl || null;
         }
 
         try {
@@ -54,7 +69,7 @@ export const actions: Actions = {
                         subject,
                         hourlyRate,
                         bio,
-                        ...(profileImageUrl ? { profileImageUrl: urlPath } : {})
+                        ...(urlPath ? { profileImageUrl: urlPath } : {})
                     }
                 });
             } else {
@@ -64,7 +79,7 @@ export const actions: Actions = {
                         subject,
                         hourlyRate,
                         bio,
-                        ...(profileImageUrl ? { profileImageUrl: urlPath } : {})
+                        ...(urlPath ? { profileImageUrl: urlPath } : {})
                     }
                 });
             }

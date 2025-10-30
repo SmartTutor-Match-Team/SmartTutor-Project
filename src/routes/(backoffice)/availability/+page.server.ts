@@ -3,46 +3,52 @@ import type { Actions } from './$types';
 
 export const actions: Actions = {
     create: async ({ request, cookies }) => {
-        const formData = await request.formData();
+        try {
+            const formData = await request.formData();
 
-        const date = formData.get('date') as string;
-        const startTime = formData.get('startTime') as string;
-        const endTime = formData.get('endTime') as string;
-        const zoomLink = formData.get('zoomLink') as string;
-        const maxStudents = parseInt(formData.get('maxStudents') as string, 10);
+            const date = formData.get('date') as string;
+            const startTime = formData.get('startTime') as string;
+            const endTime = formData.get('endTime') as string;
+            const zoomLink = formData.get('zoomLink') as string;
+            const maxStudents = parseInt(formData.get('maxStudents') as string, 10);
 
-        if (!date || !startTime || !endTime || !zoomLink || isNaN(maxStudents)) {
-            return { success: false, message: 'Invalid input' };
-        }
-
-        const tutorId = cookies.get('profileId');
-
-        if (!tutorId) {
-            return { success: false, message: 'Tutor ID is required' };
-        }
-
-        const parsedDate = new Date(`${date}T00:00:00+07:00`);
-        const parsedStartTime = new Date(`${date}T${startTime}:00+07:00`);
-        const parsedEndTime = new Date(`${date}T${endTime}:00+07:00`);
-
-        if (isNaN(parsedDate.getTime()) || isNaN(parsedStartTime.getTime()) || isNaN(parsedEndTime.getTime())) {
-            return { success: false, message: 'Invalid date or time' };
-        }
-
-        await prisma.availability.create({
-            data: {
-                date: parsedDate,
-                startTime: parsedStartTime,
-                endTime: parsedEndTime,
-                zoomLink,
-                maxStudents,
-                tutor: {
-                    connect: { id: tutorId }
-                }
+            if (!date || !startTime || !endTime || !zoomLink || isNaN(maxStudents)) {
+                return { success: false, message: 'Invalid input' };
             }
-        });
 
-        return { success: true, message: 'Availability added successfully' };
+            const tutorId = cookies.get('profileId');
+            console.log('[availability:create] profileId cookie:', tutorId);
+
+            if (!tutorId) {
+                return { success: false, message: 'Tutor ID is required' };
+            }
+
+            const parsedDate = new Date(`${date}T00:00:00+07:00`);
+            const parsedStartTime = new Date(`${date}T${startTime}:00+07:00`);
+            const parsedEndTime = new Date(`${date}T${endTime}:00+07:00`);
+
+            if (isNaN(parsedDate.getTime()) || isNaN(parsedStartTime.getTime()) || isNaN(parsedEndTime.getTime())) {
+                return { success: false, message: 'Invalid date or time' };
+            }
+
+            await prisma.availability.create({
+                data: {
+                    date: parsedDate,
+                    startTime: parsedStartTime,
+                    endTime: parsedEndTime,
+                    zoomLink,
+                    maxStudents,
+                    tutor: {
+                        connect: { id: tutorId }
+                    }
+                }
+            });
+
+            return { success: true, message: 'Availability added successfully' };
+        } catch (err) {
+            console.error('[availability:create] error:', err);
+            return { success: false, message: 'Failed to add availability' };
+        }
     },
 
     delete: async ({ request }) => {
@@ -129,65 +135,64 @@ export const actions: Actions = {
 };
 
 export async function load({ cookies }: { cookies: any }) {
-    // get now student count from booking
-    const availability = await prisma.availability.findMany({
-        where: {
-            tutorId: cookies.get('profileId')
-        },
-        orderBy: [
-            { date: 'desc' },
-            { startTime: 'asc' }
-        ]
-    });
+    try {
+        const profileId = cookies.get('profileId');
+        console.log('[availability:load] profileId cookie:', profileId);
 
-    // count booking this availability
-    const bookings = await prisma.booking.findMany({
-        where: {
-            availabilityId: {
-                in: availability.map(av => av.id)
-            },
-            status: 'BOOKED'
-        }
-    });
-
-    const completeAvailability = await prisma.booking.findMany({
-        where: {
-            availabilityId: {
-                in: availability.map(av => av.id)
-            },
-            status: 'COMPLETED'
-        }
-    });
-
-    availability.forEach(av => {
-        const isCompleted = completeAvailability.some(ca => ca.availabilityId === av.id);
-        (av as any).isCompleted = isCompleted;
-    });
-
-    // Map student count to each availability
-    const availabilityWithStudentCount = availability.map(av => {
-        const studentCount = bookings.filter(b => b.availabilityId === av.id).length;
-
-        // ✅ แปลงเป็น timezone ไทย
-        const date = new Date(av.date).toLocaleDateString('th-TH', {
-            timeZone: 'Asia/Bangkok'
+        // get now student count from booking
+        const availability = await prisma.availability.findMany({
+            where: { tutorId: profileId },
+            orderBy: [
+                { date: 'desc' },
+                { startTime: 'asc' }
+            ]
         });
 
-        const startTime = new Date(av.startTime).toLocaleTimeString('th-TH', {
-            hour: '2-digit',
-            minute: '2-digit',
-            timeZone: 'Asia/Bangkok'
+        // count booking this availability
+        const bookings = await prisma.booking.findMany({
+            where: {
+                availabilityId: { in: availability.map(av => av.id) },
+                status: 'BOOKED'
+            }
         });
 
-        const endTime = new Date(av.endTime).toLocaleTimeString('th-TH', {
-            hour: '2-digit',
-            minute: '2-digit',
-            timeZone: 'Asia/Bangkok'
+        const completeAvailability = await prisma.booking.findMany({
+            where: {
+                availabilityId: { in: availability.map(av => av.id) },
+                status: 'COMPLETED'
+            }
         });
 
-        return { ...av, studentCount, date, startTime, endTime };
-    });
+        availability.forEach(av => {
+            const isCompleted = completeAvailability.some(ca => ca.availabilityId === av.id);
+            (av as any).isCompleted = isCompleted;
+        });
 
+        // Map student count to each availability
+        const availabilityWithStudentCount = availability.map(av => {
+            const studentCount = bookings.filter(b => b.availabilityId === av.id).length;
 
-    return { availability: availabilityWithStudentCount };
+            // ✅ แปลงเป็น timezone ไทย
+            const date = new Date(av.date).toLocaleDateString('th-TH', { timeZone: 'Asia/Bangkok' });
+
+            const startTime = new Date(av.startTime).toLocaleTimeString('th-TH', {
+                hour: '2-digit',
+                minute: '2-digit',
+                timeZone: 'Asia/Bangkok'
+            });
+
+            const endTime = new Date(av.endTime).toLocaleTimeString('th-TH', {
+                hour: '2-digit',
+                minute: '2-digit',
+                timeZone: 'Asia/Bangkok'
+            });
+
+            return { ...av, studentCount, date, startTime, endTime };
+        });
+
+        return { availability: availabilityWithStudentCount };
+    } catch (err) {
+        console.error('[availability:load] error:', err);
+        return { availability: [] };
+    }
 }

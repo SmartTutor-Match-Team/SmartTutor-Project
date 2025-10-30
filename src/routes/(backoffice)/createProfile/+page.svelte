@@ -40,7 +40,7 @@
 				profileImageUrl = result.data.url;
 				successMessage = 'Upload successful!';
                 setTimeout(() => {
-                    goto('/overview');
+                    goto('/main');
                 }, 1500);
 			} else {
 				errorMessage = `Upload failed: ${result.message}`;
