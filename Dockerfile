@@ -14,11 +14,11 @@ RUN pnpm install
 # Copy source code ทั้งหมด
 COPY . .
 
-# Prisma generate ก่อน SvelteKit build
-RUN pnpm prisma generate
-
 # SvelteKit build
 RUN pnpm build
+
+# Prisma generate ก่อน SvelteKit build
+RUN pnpm prisma generate
 
 # เปิดพอร์ต
 EXPOSE 3000
