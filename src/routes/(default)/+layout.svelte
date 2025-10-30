@@ -3,7 +3,7 @@
 	let { children } = $props();
 </script>
 
-<main class="bg-[#F9FCFF] min-h-screen">
+<main class="bg-[#F9FCFF] min-h-screen pt-30">
     <nav class="w-[70%] rounded-2xl border-1 border-[#334EAC59] bg-[#334EAC59] inset-shadow-[0px_0px_5px_8px_#d0d7f1] p-2 mx-auto fixed inset-x-0 top-5 flex justify-around items-center text-white font-semibold">
         <a href="/landing#home">
             <img src="/Logo.svg" alt="Logo" class="w-12">

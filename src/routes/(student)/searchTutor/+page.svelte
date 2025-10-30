@@ -141,8 +141,8 @@
                 <p class="text-black">Subject: {tutor.subject}</p>
                 <p class="text-black text-center px-2">Bio: {tutor.bio || 'No bio available'}</p>
                 <p class="text-black">Hourly Rate: ${tutor.hourlyRate}</p>
-                <p class="text-orange-300">Rating: {tutor.avgRating ? tutor.avgRating.toFixed(1) : 'No ratings yet'}</p>
-                <a href={`/tutorProfile/${tutor.id}`} class="mt-4 px-4 py-2 rounded-4xl border-1 border-[#E7F1FF5A] inset-shadow-[1px_2px_5px_2px_#ffffff] hover:bg-[#E7F1FF5A] hover:text-[#334EAC] transition-colors">
+                <p class="text-[#FFD700]">Rating: {tutor.avgRating ? tutor.avgRating.toFixed(1) : 'No ratings yet'}</p>
+                <a href={`/tutorProfile/${tutor.id}`} class="mt-4 px-4 py-2 rounded-4xl border-1 border-[#E7F1FF5A] inset-shadow-[1px_2px_5px_2px_#ffffff] hover:bg-[#E7F1FF5A] hover:text-[#334EAC] transition-colors text-black">
                     View Profile
                 </a>
             </article>
