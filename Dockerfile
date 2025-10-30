@@ -1,10 +1,8 @@
-# ใช้ Node 20 LTS image
 FROM node:20
 
-# Set working directory
 WORKDIR /app
 
-# Copy package.json และ pnpm lockfile
+# Copy package.json และ lockfile
 COPY package.json pnpm-lock.yaml* ./
 
 # ติดตั้ง pnpm
@@ -13,14 +11,17 @@ RUN npm install -g pnpm
 # ติดตั้ง dependencies
 RUN pnpm install
 
-# Copy source code ทั้งหมด
+# Copy source code
 COPY . .
 
-# ติดตั้ง Prisma CLI (ถ้าโปรเจกต์ใช้ Prisma)
+# รัน build SvelteKit ก่อน Prisma
+RUN pnpm build
+
+# Prisma generate
 RUN pnpm prisma generate
 
-# เปิดพอร์ตที่แอปใช้
+# เปิดพอร์ต
 EXPOSE 3000
 
-# เริ่ม server
+# Start server
 CMD ["pnpm", "start"]
