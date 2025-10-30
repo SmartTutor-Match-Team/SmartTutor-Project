@@ -27,7 +27,7 @@ RUN pnpm prisma generate
 RUN pnpm build
 
 # เปิดพอร์ต
-EXPOSE 5173
+EXPOSE 3000
 
 # Start server
 CMD ["pnpm", "start"]
