@@ -68,17 +68,19 @@
 	}
 
 	const handleAddAvailability = async () => {
-		const formData = new FormData();
-		formData.append('date', date);
-		formData.append('startTime', startTime);
-		formData.append('endTime', endTime);
-		formData.append('zoomLink', zoomLink);
-		formData.append('maxStudents', maxStudents);
+		const payload = {
+			date,
+			startTime,
+			endTime,
+			zoomLink,
+			maxStudents: Number(maxStudents)
+		};
 
 		try {
-			const response = await fetch('/availability?/create', {
+			const response = await fetch('/api/availability/create', {
 				method: 'POST',
-				body: formData
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify(payload)
 			});
 
 			const result = await response.json();
@@ -146,7 +148,7 @@
 			formData.append('zoomLink', editAvailabilityZoomLink);
 			formData.append('maxStudents', editAvailabilityMaxStudents.toString());
 
-			const response = await fetch(`/availability?/edit`, {
+			const response = await fetch(`/api/availability/edit`, {
 				method: 'POST',
 				body: formData
 			});
@@ -204,7 +206,7 @@
 			formData.append('id', id);
 			formData.append('vdoLink', vdoLink);
 
-			const response = await fetch(`/availability?/complete`, {
+			const response = await fetch(`/availability/complete`, {
 				method: 'POST',
 				body: formData
 			});
