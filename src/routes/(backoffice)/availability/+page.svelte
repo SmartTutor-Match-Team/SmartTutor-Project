@@ -206,7 +206,7 @@
 			formData.append('id', id);
 			formData.append('vdoLink', vdoLink);
 
-			const response = await fetch(`/availability/complete`, {
+			const response = await fetch(`/availability?/complete`, {
 				method: 'POST',
 				body: formData
 			});
